@@ -1,0 +1,222 @@
+{
+  "info": {
+    "name": "Smart Queue API",
+    "description": "Collection complète pour l'API Smart Queue",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api" },
+    { "key": "token", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Me",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/auth/me"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/logout"
+          }
+        },
+        {
+          "name": "Register Agent (Admin)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newagent\",\n  \"password\": \"password123\",\n  \"firstName\": \"New\",\n  \"lastName\": \"Agent\",\n  \"email\": \"new@smartqueue.com\",\n  \"role\": \"agent\",\n  \"counterNumber\": 5,\n  \"services\": [\"general\", \"account\"]\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tickets",
+      "item": [
+        {
+          "name": "Create Ticket",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "url": "{{baseUrl}}/tickets",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceType\": \"general\",\n  \"customerName\": \"Jean Dupont\",\n  \"customerPhone\": \"0612345678\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Tickets",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/tickets"
+          }
+        },
+        {
+          "name": "Get Waiting Tickets",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/tickets?status=waiting"
+          }
+        },
+        {
+          "name": "Get Ticket by Number",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/tickets/number/G001"
+          }
+        },
+        {
+          "name": "Checkin Ticket",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "url": "{{baseUrl}}/tickets/{{ticketId}}/checkin"
+          }
+        },
+        {
+          "name": "Cancel Ticket",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "url": "{{baseUrl}}/tickets/{{ticketId}}/cancel"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Call Next Ticket",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/next",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          }
+        },
+        {
+          "name": "Start Serving",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/serve"
+          }
+        },
+        {
+          "name": "Complete Ticket",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/complete",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Service terminé avec succès\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Mark No-Show",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/no-show"
+          }
+        },
+        {
+          "name": "Get All Agents",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/agents"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Stats",
+      "item": [
+        {
+          "name": "Get Queue Status (Public)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/stats/queue"
+          }
+        },
+        {
+          "name": "Get Statistics",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/stats"
+          }
+        },
+        {
+          "name": "Get Agent Stats",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/stats/agents"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/health"
+          }
+        }
+      ]
+    }
+  ]
+}
+
