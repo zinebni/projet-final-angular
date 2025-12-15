@@ -61,11 +61,10 @@ exports.getStats = async (req, res) => {
       { $group: { _id: '$serviceType', count: { $sum: 1 } } }
     ]);
 
-    // Get online agents count
-    const onlineAgents = await Agent.countDocuments({ isOnline: true, isActive: true });
-    const totalAgents = await Agent.countDocuments({ isActive: true });
-
-    // Get hourly distribution
+      // Get online agents count (only count agents with role 'agent', exclude admin and supervisor)
+      const onlineAgents = await Agent.countDocuments({ isOnline: true, isActive: true, role: 'agent' });
+      const totalAgents = await Agent.countDocuments({ isActive: true, role: 'agent' });
+      // Get hourly distribution
     const hourlyStats = await Ticket.aggregate([
       { $match: { createdAt: { $gte: today } } },
       {
