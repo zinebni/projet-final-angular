@@ -45,44 +45,87 @@ Système complet de gestion intelligente des files d'attente avec **filtrage par
 
 ## 🚀 Démarrage Rapide
 
-### Option 1: Docker (Recommandé)
+### Option 1: Docker (Recommandé) 🐳
 
-```bash
-# Cloner et lancer
-docker-compose up --build
+**Tout est conteneurisé - Simple et rapide**
 
-# Accéder à l'application
-# Frontend: http://localhost
-# API: http://localhost:5000/api
+```powershell
+# Démarrer
+.\start.ps1
+
+# OU manuellement
+docker-compose up -d
+
+# Initialiser la base de données (première fois)
+docker exec smartqueue-backend npm run seed
+
+# Arrêter
+docker-compose down
 ```
 
-### Option 2: Développement Local
+**Accès**:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5000/api
 
-#### Prérequis
-- Node.js 18+
-- MongoDB 6+ (local ou Docker)
-- npm ou yarn
+---
 
-#### 1. Lancer MongoDB (avec Docker)
-```bash
-docker-compose -f docker-compose.dev.yml up -d
-```
+### Option 2: Développement Local ⚡
 
-#### 2. Backend
-```bash
+**Pour développer avec hot-reload**
+
+```powershell
+# Terminal 1: Backend
 cd server
-cp .env.example .env  # Configurer les variables
-npm install
-npm run seed          # Créer les utilisateurs par défaut avec services
-npm run dev           # Lancer en mode développement
+npm run dev
+
+# Terminal 2: Frontend
+cd client
+ng serve
 ```
 
-#### 3. Frontend
+**Accès**: http://localhost:4200
+
+**Prérequis**:
+- MongoDB installé et démarré localement
+- Node.js v20+
+- Angular CLI
+
+---
+
+## 🔧 Commandes Utiles
+
+### Docker
+
 ```bash
+# Démarrer
+docker-compose up -d
+
+# Voir les logs
+docker-compose logs -f
+
+# Initialiser la DB
+docker exec smartqueue-backend npm run seed
+
+# Arrêter
+docker-compose down
+```
+
+### Local
+
+```bash
+# Backend
+cd server
+npm install
+npm run seed
+npm run dev
+
+# Frontend
 cd client
 npm install
-npm start             # http://localhost:4200
+ng serve
 ```
+
+---
 
 ## 👤 Comptes par Défaut
 
@@ -213,63 +256,10 @@ smart-queue/
 │   │   └── environments/     # Configuration environnement
 │   └── angular.json          # Config Angular
 │
-├── docker-compose.yml         # Docker production
-├── docker-compose.dev.yml     # Docker développement
-├── IMPROVEMENTS.md            # 📚 Documentation complète des améliorations
-├── TESTING_GUIDE.md           # 🧪 Guide de test
+├── docker-compose.yml         # Configuration Docker
+├── start.ps1                  # Script de démarrage Docker
+├── GUIDE_SIMPLE.md            # 📚 Guide complet
 └── README.md                  # Ce fichier
-```
-
----
-
-## 🎯 Améliorations Récentes
-
-### ✅ Système de Filtrage par Service
-- Chaque agent est assigné à des services spécifiques
-- Filtrage automatique des tickets par service de l'agent
-- Les agents ne voient et ne peuvent prendre que les tickets de leurs services
-- Admin et superviseur ont accès à tous les services
-
-### ✅ Sécurité Renforcée
-- Validation stricte des inputs côté serveur
-- Vérification des permissions par service
-- Messages d'erreur informatifs mais sécurisés
-- Middleware de validation des services
-
-### ✅ Socket.io Optimisé
-- Système de salles par service (`service:account`, `service:loan`, etc.)
-- Émissions ciblées pour réduire le trafic
-- Synchronisation en temps réel par service
-
-### ✅ Code Documenté
-- Commentaires détaillés dans tout le code
-- Documentation des choix architecturaux
-- Logs informatifs pour le debugging
-
-**Pour plus de détails, consultez [IMPROVEMENTS.md](IMPROVEMENTS.md)**
-
----
-
-## 🧪 Tests
-
-Voir le guide de test complet : [TESTING_GUIDE.md](TESTING_GUIDE.md)
-
-### Tests rapides
-
-```bash
-# Test de filtrage par service
-1. Se connecter avec agent1 (services: account, general)
-2. Créer un ticket "account" → agent1 le voit ✅
-3. Créer un ticket "loan" → agent1 ne le voit PAS ✅
-
-# Test de services partagés
-1. Se connecter avec agent2 (loan, consultation)
-2. Se connecter avec agent4 (general, consultation)
-3. Créer ticket "consultation" → les deux agents le voient ✅
-
-# Test de sécurité
-1. Essayer via API d'appeler un ticket non autorisé
-2. Résultat attendu: Erreur 403 ✅
 ```
 
 ---
@@ -313,117 +303,85 @@ Ouvrir la console développeur (F12) pour voir:
 
 ## 📦 Variables d'Environnement
 
-Créer un fichier `.env` dans le dossier `server/`:
+Le fichier `server/.env` est déjà configuré pour le développement local:
 
 ```env
-# Serveur
-NODE_ENV=development
 PORT=5000
-
-# MongoDB
-MONGO_URI=mongodb://localhost:27017/smartqueue
-
-# JWT
-JWT_SECRET=votre_secret_jwt_tres_long_et_securise_ici
-JWT_EXPIRE=7d
-
-# Frontend URL (pour CORS)
-CLIENT_URL=http://localhost:4200
+NODE_ENV=development
+MONGODB_URI=mongodb://localhost:27017/smartqueue
+JWT_SECRET=dev_secret_key_change_in_production
+JWT_EXPIRES_IN=24h
+CLIENT_URL=http://localhost:4200,http://localhost:3000,http://localhost
 ```
+
+Pour Docker, les variables sont définies dans `docker-compose.yml`.
 
 ---
 
-## 🚀 Déploiement en Production
+## 📚 Documentation Complète
+
+Pour plus de détails, consultez **[GUIDE_SIMPLE.md](GUIDE_SIMPLE.md)** qui contient:
+- Guide complet Docker et développement local
+- Comparaison des modes
+- Résolution des problèmes courants
+- Commandes utiles
+
+---
+
+## 🐛 Problèmes Courants
+
+### Port déjà utilisé
+```bash
+# Trouver le processus
+netstat -ano | findstr :5000
+
+# Tuer le processus
+taskkill /PID <PID> /F
+```
+
+### MongoDB non connecté (Local)
+```bash
+# Vérifier MongoDB
+mongosh
+
+# Démarrer MongoDB
+net start MongoDB
+```
+
+### Erreur CORS
+Vérifier que `CLIENT_URL` dans `.env` ou `docker-compose.yml` contient l'URL du frontend.
+
+---
+
+## 🚀 Déploiement Production
 
 ### Avec Docker
 
 ```bash
-# Build et démarrage
-docker-compose up -d --build
+# Démarrer
+docker-compose up -d
 
-# Vérifier les logs
+# Initialiser la DB
+docker exec smartqueue-backend npm run seed
+
+# Logs
 docker-compose logs -f
 
 # Arrêter
 docker-compose down
 ```
 
-### Configuration Nginx (optionnel)
+### Ports en Production
 
-```nginx
-server {
-    listen 80;
-    server_name example.com;
+Modifier `docker-compose.yml` pour changer les ports:
 
-    location / {
-        proxy_pass http://localhost:4200;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-
-    location /api {
-        proxy_pass http://localhost:5000;
-    }
-
-    location /socket.io {
-        proxy_pass http://localhost:5000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-    }
-}
+```yaml
+frontend:
+  ports:
+    - "80:80"  # Port 80 au lieu de 3000
 ```
 
 ---
-
-## 📚 Documentation Complète
-
-- **[IMPROVEMENTS.md](IMPROVEMENTS.md)** : Documentation détaillée de toutes les améliorations
-- **[TESTING_GUIDE.md](TESTING_GUIDE.md)** : Guide complet de test et validation
-- **API Documentation** : Consultez les commentaires dans les controllers
-
----
-
-## 🤝 Contribution
-
-1. Fork le projet
-2. Créer une branche (`git checkout -b feature/AmazingFeature`)
-3. Commit (`git commit -m 'Add AmazingFeature'`)
-4. Push (`git push origin feature/AmazingFeature`)
-5. Ouvrir une Pull Request
-
----
-
-## 📄 Licence
-
-Ce projet est sous licence MIT.
-
----
-
-## 👨‍💻 Support
-
-Pour toute question ou problème:
-1. Consultez [TESTING_GUIDE.md](TESTING_GUIDE.md) pour le debugging
-2. Vérifiez [IMPROVEMENTS.md](IMPROVEMENTS.md) pour l'architecture
-3. Consultez les logs serveur et console navigateur
-
----
-
-**Fait avec ❤️ pour améliorer l'expérience des files d'attente**
-├── client/                # Frontend Angular
-│   └── src/
-│       └── app/
-│           ├── guards/    # Guards de route
-│           ├── interceptors/
-│           ├── models/    # Interfaces TypeScript
-│           ├── pages/     # Composants de page
-│           └── services/  # Services Angular
-├── docker-compose.yml     # Docker production
-└── docker-compose.dev.yml # Docker développement
-```
 
 ## 🎨 Pages de l'Application
 
@@ -435,7 +393,11 @@ Pour toute question ou problème:
 - `/admin` - Tableau de bord admin
 - `/display` - Affichage public (écran)
 
+---
+
 ## 📄 Licence
 
 MIT
+
+---
 

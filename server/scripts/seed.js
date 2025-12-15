@@ -32,9 +32,9 @@ const seedAgents = [
   {
     username: 'agent1',
     password: 'agent123',
-    firstName: 'Marie',
-    lastName: 'Dupont',
-    email: 'marie.dupont@smartqueue.com',
+    firstName: 'Mohammed',
+    lastName: 'Moukhlisse',
+    email: 'mohammed.moukhlisse@smartqueue.com',
     role: 'agent',
     counterNumber: 1,
     // Agent spécialisé en comptes et services généraux
@@ -44,9 +44,9 @@ const seedAgents = [
   {
     username: 'agent2',
     password: 'agent123',
-    firstName: 'Jean',
-    lastName: 'Martin',
-    email: 'jean.martin@smartqueue.com',
+    firstName: 'Ali',
+    lastName: 'Allami',
+    email: 'ali.allami@smartqueue.com',
     role: 'agent',
     counterNumber: 2,
     // Agent spécialisé en prêts et consultations
@@ -56,9 +56,9 @@ const seedAgents = [
   {
     username: 'agent3',
     password: 'agent123',
-    firstName: 'Sophie',
-    lastName: 'Bernard',
-    email: 'sophie.bernard@smartqueue.com',
+    firstName: 'Safae',
+    lastName: 'Saadani',
+    email: 'safae.saadani@smartqueue.com',
     role: 'agent',
     counterNumber: 3,
     // Agent spécialisé en inscriptions et paiements
@@ -68,9 +68,9 @@ const seedAgents = [
   {
     username: 'agent4',
     password: 'agent123',
-    firstName: 'Luc',
-    lastName: 'Moreau',
-    email: 'luc.moreau@smartqueue.com',
+    firstName: 'Lamiae',
+    lastName: 'Chakir',
+    email: 'lamiae.chakir@smartqueue.com',
     role: 'agent',
     counterNumber: 4,
     // Agent polyvalent gérant services généraux et consultations
@@ -80,9 +80,9 @@ const seedAgents = [
   {
     username: 'supervisor',
     password: 'supervisor123',
-    firstName: 'Pierre',
-    lastName: 'Durand',
-    email: 'pierre.durand@smartqueue.com',
+    firstName: 'Ibrahim',
+    lastName: 'Iraqui',
+    email: 'ibrahim.iraqui@smartqueue.com',
     role: 'supervisor',
     counterNumber: null,
     // Supervisor a accès à tous les services

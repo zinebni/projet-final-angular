@@ -1,8 +1,8 @@
 const path = require('path');
 
-// CORRECTION: Charger les variables d'environnement depuis le bon fichier
+// Load environment variables from .env file (fallback to .env.example for development)
 require('dotenv').config({
-  path: path.resolve(__dirname, '.env.example'),
+  path: path.resolve(__dirname, '.env'),
 });
 
 const http = require('http');

@@ -10,9 +10,20 @@ const statsRoutes = require('./routes/stats.routes');
 
 const app = express();
 
-// Middleware
+// Middleware - CORS configuration with multiple origins support
+const allowedOrigins = config.clientUrl.split(',').map(url => url.trim());
 app.use(cors({
-  origin: config.clientUrl,
+  origin: function(origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(express.json());

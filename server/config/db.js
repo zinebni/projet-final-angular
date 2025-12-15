@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    const mongoUri = process.env.MONGO_URI;
+    const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
 
     if (!mongoUri) {
-      throw new Error('MONGO_URI is undefined. Check your .env file');
+      throw new Error('MONGODB_URI is undefined. Check your .env file');
     }
 
     const conn = await mongoose.connect(mongoUri);

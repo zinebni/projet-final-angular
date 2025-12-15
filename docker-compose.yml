@@ -1,7 +1,13 @@
-version: '3.8'
+# ================================
+# Smart Queue - Docker Compose
+# ================================
+# Configuration simple et unifiée
+# Frontend: http://localhost:3000
+# Backend: http://localhost:5000
+# MongoDB: localhost:27017
 
 services:
-  # MongoDB Database
+  # MongoDB
   mongodb:
     image: mongo:7
     container_name: smartqueue-mongodb
@@ -11,7 +17,7 @@ services:
     volumes:
       - mongodb_data:/data/db
     environment:
-      - MONGO_INITDB_DATABASE=smartqueue
+      MONGO_INITDB_DATABASE: smartqueue
     networks:
       - smartqueue-network
     healthcheck:
@@ -31,25 +37,25 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - NODE_ENV=production
-      - PORT=5000
-      - MONGODB_URI=mongodb://mongodb:27017/smartqueue
-      - JWT_SECRET=your_super_secret_jwt_key_change_in_production_123456
-      - JWT_EXPIRES_IN=24h
-      - CLIENT_URL=http://localhost
+      NODE_ENV: production
+      PORT: 5000
+      MONGODB_URI: mongodb://mongodb:27017/smartqueue
+      JWT_SECRET: your_jwt_secret_change_this_in_production
+      JWT_EXPIRES_IN: 24h
+      CLIENT_URL: http://localhost:3000,http://localhost:4200,http://localhost
     depends_on:
       mongodb:
         condition: service_healthy
     networks:
       - smartqueue-network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/api/health"]
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/api/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"]
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 10s
+      retries: 5
+      start_period: 40s
 
-  # Frontend (Angular + Nginx)
+  # Frontend (Nginx)
   frontend:
     build:
       context: ./client
@@ -57,14 +63,14 @@ services:
     container_name: smartqueue-frontend
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "3000:80"
     depends_on:
       backend:
         condition: service_healthy
     networks:
       - smartqueue-network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
+      test: ["CMD", "test", "-f", "/usr/share/nginx/html/index.html"]
       interval: 30s
       timeout: 10s
       retries: 3
