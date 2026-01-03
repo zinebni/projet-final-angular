@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Ticket, Agent, ApiResponse, ServiceType } from '../models/ticket.model';
 
+// Service to handle all functionalities 
 @Injectable({
   providedIn: 'root'
 })

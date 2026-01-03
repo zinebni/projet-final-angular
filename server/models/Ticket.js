@@ -134,13 +134,23 @@ ticketSchema.statics.generateTicketNumber = async function(serviceType) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   
-  // Count tickets of this type created today
-  const count = await this.countDocuments({
+  // Find the last ticket of this type created today to get the highest number
+  const lastTicket = await this.findOne({
     serviceType,
     createdAt: { $gte: today }
-  });
+  }).sort({ ticketNumber: -1 });
   
-  const number = String(count + 1).padStart(3, '0');
+  let nextNumber = 1;
+  
+  if (lastTicket && lastTicket.ticketNumber) {
+    // Extract the number from the ticket (e.g., "G005" -> 5)
+    const currentNumber = parseInt(lastTicket.ticketNumber.substring(1), 10);
+    if (!isNaN(currentNumber)) {
+      nextNumber = currentNumber + 1;
+    }
+  }
+  
+  const number = String(nextNumber).padStart(3, '0');
   return `${prefix}${number}`;
 };
 

@@ -54,7 +54,7 @@ Système complet de gestion intelligente des files d'attente avec **filtrage par
 .\start.ps1
 
 # OU manuellement
-docker-compose up -d
+docker-compose up --build -d
 
 # Initialiser la base de données (première fois)
 docker exec smartqueue-backend npm run seed

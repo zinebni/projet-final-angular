@@ -15,7 +15,7 @@ Guide complet pour démarrer et utiliser Smart Queue en mode Docker ou développ
 .\start.ps1
 
 # OU manuellement
-docker-compose up -d
+docker-compose up --build -d
 
 # Initialiser la base de données (première fois)
 docker exec smartqueue-backend npm run seed

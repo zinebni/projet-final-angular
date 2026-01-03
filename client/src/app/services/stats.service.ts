@@ -5,6 +5,8 @@ import { environment } from '../../environments/environment';
 import { QueueStats, QueueStatus } from '../models/stats.model';
 import { Agent, ApiResponse } from '../models/ticket.model';
 
+// Service to handle statistics and reporting
+
 @Injectable({
   providedIn: 'root'
 })

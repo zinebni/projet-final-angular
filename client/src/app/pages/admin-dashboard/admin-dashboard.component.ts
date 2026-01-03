@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription, interval } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core'; //live cycle hooks
+import { Subscription, interval } from 'rxjs'; //Subscription pour gérer les abonnements et interval pour les mises à jour périodiques
 import { QueueStats } from '../../models/stats.model';
 import { Agent } from '../../models/ticket.model';
 import { SocketService } from '../../services/socket.service';
 import { StatsService } from '../../services/stats.service';
-
+// Admin Dashboard Component for real-time statistics and agent management it uses StatsService and SocketService
+//for admin and supervisor roles
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
@@ -300,6 +301,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   agents: Agent[] = [];
   private subscriptions: Subscription[] = [];
 
+  // Service labels for display (Record is a TypeScript utility type for object maps with string keys used here to map service codes to their French labels)
   private serviceLabels: Record<string, string> = {
     general: 'Général',
     account: 'Compte',
@@ -309,6 +311,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     payment: 'Paiement'
   };
 
+  //injecter les services nécessaires
   constructor(
     private statsService: StatsService,
     private socketService: SocketService

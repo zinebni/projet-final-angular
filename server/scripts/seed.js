@@ -99,7 +99,11 @@ const seedDatabase = async () => {
     // Clear existing agents
     await Agent.deleteMany({});
     console.log('🗑️  Cleared existing agents');
-
+    // Clear existing tickets
+    const Ticket = require('../models/Ticket');
+    await Ticket.deleteMany({});
+    console.log('🗑️  Cleared existing tickets');
+    console.log('\n🌱 Seeding database...');
     // Create agents with validation
     for (const agentData of seedAgents) {
       try {

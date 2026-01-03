@@ -5,13 +5,11 @@ import { environment } from '../../environments/environment';
 import { Ticket } from '../models/ticket.model';
 
 /**
- * SERVICE SOCKET AMÉLIORÉ
- * 
- * Améliorations :
- * - Support des salles de service pour filtrage
- * - Gestion améliorée de la connexion/déconnexion des agents
- * - Émission des services de l'agent lors de la connexion
- * - Logs détaillés pour debugging
+ * SERVICE SOCKET :
+ * This service manages real-time communication with the server using Socket.IO.
+ * It handles connection management, event subscriptions, and provides observables
+ * for various ticket-related events such as ticket creation, updates, and calls.
+ * It also includes methods for agents to join/leave rooms and set their online/offline status.
  */
 
 @Injectable({

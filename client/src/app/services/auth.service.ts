@@ -8,6 +8,7 @@ interface LoginResponse {
   token: string;
   agent: Agent;
 }
+// Service to handle authentication logic
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,7 @@ export class AuthService {
       this.currentAgent.set(JSON.parse(agent));
     }
   }
-
+  // Method to log in a user it takes username and password and returns an observable based on the API response
   login(username: string, password: string): Observable<ApiResponse<LoginResponse>> {
     return this.http.post<ApiResponse<LoginResponse>>(`${this.apiUrl}/login`, { username, password })
       .pipe(
@@ -48,6 +49,7 @@ export class AuthService {
       );
   }
 
+  // Method to log out a user it returns an observable based on the API response
   logout(): Observable<any> {
     const token = this.token();
     if (!token) {
@@ -71,6 +73,7 @@ export class AuthService {
     localStorage.removeItem('agent');
   }
 
+  //c'est la page d'accueil 
   getMe(): Observable<ApiResponse<Agent>> {
     return this.http.get<ApiResponse<Agent>>(`${this.apiUrl}/me`).pipe(
       tap(response => {
@@ -86,15 +89,16 @@ export class AuthService {
     return this.token();
   }
 
+  // returns true if the user is logged in, false otherwise thanks to !!this.token() !! means convert to boolean
   isLoggedIn(): boolean {
     return !!this.token();
   }
-
+  //check if the user is admin or supervisor : returns true if the user is admin or supervisor, false otherwise
   isAdmin(): boolean {
     const agent = this.currentAgent();
     return agent?.role === 'admin' || agent?.role === 'supervisor';
   }
-
+  // returns the role of the user as a string or null if no user is logged in
   getRole(): string | null {
     return this.currentAgent()?.role || null;
   }
